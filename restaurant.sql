@@ -6,9 +6,11 @@ CREATE TABLE Usuario (
     Senha VARCHAR(255),
     Telefone VARCHAR(20),
     CPF VARCHAR(20),
-    EnderecoID INT,
-    FOREIGN KEY (EnderecoID) REFERENCES Endereco(ID)
+    EnderecoID INT
 );
+
+ALTER TABLE Usuario
+ADD CONSTRAINT FK_Usuario_Endereco FOREIGN KEY (EnderecoID) REFERENCES Endereco(ID);
 
 -- Restaurante
 CREATE TABLE Restaurante (
@@ -18,10 +20,12 @@ CREATE TABLE Restaurante (
     CategoriaEstadoID INT,
     Descricao TEXT,
     EnderecoID INT,
-    Rate DECIMAL(3, 2),
-    FOREIGN KEY (CategoriaEstadoID) REFERENCES CategoriaEstado(ID),
-    FOREIGN KEY (EnderecoID) REFERENCES Endereco(ID)
+    Rate DECIMAL(3, 2)
 );
+
+ALTER TABLE Restaurante
+ADD CONSTRAINT FK_Restaurante_CategoriaEstado FOREIGN KEY (CategoriaEstadoID) REFERENCES CategoriaEstado(ID),
+ADD CONSTRAINT FK_Restaurante_Endereco FOREIGN KEY (EnderecoID) REFERENCES Endereco(ID);
 
 -- Categoria Estado
 CREATE TABLE CategoriaEstado (
@@ -44,11 +48,13 @@ CREATE TABLE Pedido (
     RestauranteID INT,
     DataCriacao DATETIME,
     StatusPagamentoID INT,
-    Descricao TEXT,
-    FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
-    FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
-    FOREIGN KEY (StatusPagamentoID) REFERENCES StatusPagamento(ID)
+    Descricao TEXT
 );
+
+ALTER TABLE Pedido
+ADD CONSTRAINT FK_Pedido_Usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
+ADD CONSTRAINT FK_Pedido_Restaurante FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
+ADD CONSTRAINT FK_Pedido_StatusPagamento FOREIGN KEY (StatusPagamentoID) REFERENCES StatusPagamento(ID);
 
 -- Endereço
 CREATE TABLE Endereco (
@@ -68,19 +74,23 @@ CREATE TABLE Produto (
     Preco DECIMAL(10, 2),
     Descricao TEXT,
     RestauranteID INT,
-    CategoriaProdutoID INT,
-    FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
-    FOREIGN KEY (CategoriaProdutoID) REFERENCES CategoriaProduto(ID)
+    CategoriaProdutoID INT
 );
+
+ALTER TABLE Produto
+ADD CONSTRAINT FK_Produto_Restaurante FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
+ADD CONSTRAINT FK_Produto_CategoriaProduto FOREIGN KEY (CategoriaProdutoID) REFERENCES CategoriaProduto(ID);
 
 -- Adicional
 CREATE TABLE Adicional (
     ID INT AUTO_INCREMENT PRIMARY KEY,
     ProdutoID INT,
     Nome VARCHAR(255),
-    Preco DECIMAL(10, 2),
-    FOREIGN KEY (ProdutoID) REFERENCES Produto(ID)
+    Preco DECIMAL(10, 2)
 );
+
+ALTER TABLE Adicional
+ADD CONSTRAINT FK_Adicional_Produto FOREIGN KEY (ProdutoID) REFERENCES Produto(ID);
 
 -- Pagamento
 CREATE TABLE Pagamento (
@@ -88,10 +98,12 @@ CREATE TABLE Pagamento (
     PedidoID INT,
     MetodoPagamentoID INT,
     Valor DECIMAL(10, 2),
-    Data DATETIME,
-    FOREIGN KEY (PedidoID) REFERENCES Pedido(ID),
-    FOREIGN KEY (MetodoPagamentoID) REFERENCES MetodoPagamento(ID)
+    Data DATETIME
 );
+
+ALTER TABLE Pagamento
+ADD CONSTRAINT FK_Pagamento_Pedido FOREIGN KEY (PedidoID) REFERENCES Pedido(ID),
+ADD CONSTRAINT FK_Pagamento_MetodoPagamento FOREIGN KEY (MetodoPagamentoID) REFERENCES MetodoPagamento(ID);
 
 -- Cupom
 CREATE TABLE Cupom (
@@ -114,19 +126,23 @@ CREATE TABLE Funcionario (
     UsuarioID INT,
     RestauranteID INT,
     Cargo VARCHAR(255),
-    Salario DECIMAL(10, 2),
-    FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
-    FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID)
+    Salario DECIMAL(10, 2)
 );
+
+ALTER TABLE Funcionario
+ADD CONSTRAINT FK_Funcionario_Usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
+ADD CONSTRAINT FK_Funcionario_Restaurante FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID);
 
 -- Favoritos
 CREATE TABLE Favoritos (
     UsuarioID INT,
     RestauranteID INT,
-    PRIMARY KEY (UsuarioID, RestauranteID),
-    FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
-    FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID)
+    PRIMARY KEY (UsuarioID, RestauranteID)
 );
+
+ALTER TABLE Favoritos
+ADD CONSTRAINT FK_Favoritos_Usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID),
+ADD CONSTRAINT FK_Favoritos_Restaurante FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID);
 
 -- Status Pagamento
 CREATE TABLE StatusPagamento (
@@ -142,20 +158,24 @@ CREATE TABLE Rate (
     UsuarioID INT,
     Nota DECIMAL(3, 2),
     Data DATETIME,
-    Descricao TEXT,
-    FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
-    FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID)
+    Descricao TEXT
 );
+
+ALTER TABLE Rate
+ADD CONSTRAINT FK_Rate_Restaurante FOREIGN KEY (RestauranteID) REFERENCES Restaurante(ID),
+ADD CONSTRAINT FK_Rate_Usuario FOREIGN KEY (UsuarioID) REFERENCES Usuario(ID);
 
 -- Histórico de Pedido
 CREATE TABLE HistPedido (
     PedidoID INT,
     StatusPedidoID INT,
     DataMudanca DATETIME,
-    PRIMARY KEY (PedidoID, StatusPedidoID),
-    FOREIGN KEY (PedidoID) REFERENCES Pedido(ID),
-    FOREIGN KEY (StatusPedidoID) REFERENCES StatusPedido(ID)
+    PRIMARY KEY (PedidoID, StatusPedidoID)
 );
+
+ALTER TABLE HistPedido
+ADD CONSTRAINT FK_HistPedido_Pedido FOREIGN KEY (PedidoID) REFERENCES Pedido(ID),
+ADD CONSTRAINT FK_HistPedido_StatusPedido FOREIGN KEY (StatusPedidoID) REFERENCES StatusPedido(ID);
 
 -- Status Pedido
 CREATE TABLE StatusPedido (
